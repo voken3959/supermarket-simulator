@@ -1,0 +1,29 @@
+{
+  "name": "supermarket-sim",
+  "version": "0.2.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start:server": "node server/server.js",
+    "start": "concurrently \"npm:dev\" \"npm:start:server\""
+  },
+  "dependencies": {
+    "phaser": "^3.60.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "zustand": "^4.4.1",
+    "react-dnd": "^16.0.1",
+    "react-dnd-html5-backend": "^16.0.1",
+    "ws": "^8.13.0"
+  },
+  "devDependencies": {
+    "@types/phaser": "^3.55.10",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "typescript": "^5.2.2",
+    "vite": "^5.2.0",
+    "concurrently": "^8.2.0"
+  }
+}
