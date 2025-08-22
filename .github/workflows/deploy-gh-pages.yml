@@ -1,9 +1,8 @@
-name: Build and Deploy to GitHub Pages
+name: Build and deploy to GitHub Pages
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   workflow_dispatch:
 
 jobs:
@@ -11,23 +10,22 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: Use Node.js 18
         uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: '18'
 
       - name: Install dependencies
-        # Use `npm install` when package-lock.json may be missing.
-        # Once you commit package-lock.json, you can change this back to `npm ci`.
         run: npm install
 
       - name: Build
         env:
-          BASE_URL: "/${{ github.event.repository.name }}/"
+          BASE_URL: "/supermarket-simulator/"
           VITE_WS_URL: ${{ secrets.WS_URL }}
         run: npm run build
 
