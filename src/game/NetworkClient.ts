@@ -1,13 +1,24 @@
-// Minimal WebSocket client to sync with local debugging server.
-// Sends snapshots and receives global snapshots (very simple protocol).
+// Minimal WebSocket client to sync with optional remote debugging server.
+// The connection is enabled only if VITE_WS_URL is provided at build time.
+//
+// Set VITE_WS_URL via environment variable during the CI/build step (e.g. in GitHub Actions).
+// Example: VITE_WS_URL=wss://yourserver.example.com
+
+const WS_URL = (import.meta.env as any).VITE_WS_URL || "";
+
 export default class NetworkClient {
   private socket?: WebSocket;
   private url: string;
   private reconnectMs = 2000;
-  constructor(url = "ws://localhost:3001") {
+  constructor(url = WS_URL) {
     this.url = url;
   }
   connect() {
+    // do not attempt to connect if no URL is provided
+    if (!this.url || this.url.length === 0) {
+      console.info("[Net] VITE_WS_URL not set — network disabled");
+      return;
+    }
     if (this.socket) return;
     try {
       this.socket = new WebSocket(this.url);
@@ -15,10 +26,8 @@ export default class NetworkClient {
         console.info("[Net] Connected to server", this.url);
       };
       this.socket.onmessage = (ev) => {
-        // broadcast to game via event bus
         try {
           const payload = JSON.parse(ev.data);
-          // simply emit raw
           (window as any).eventBus?.emit?.("network:message", payload);
         } catch (e) {
           console.warn("Invalid network message", e);
