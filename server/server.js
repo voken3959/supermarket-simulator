@@ -1,9 +1,11 @@
 // Minimal demo WebSocket server to broadcast simple messages to all clients.
 // Not production-ready. Run with `node server/server.js`.
-// Listens on port 3001
+// Listens on process.env.PORT || 3001
+
 const WebSocket = require('ws');
-const wss = new WebSocket.Server({ port: 3001 }, () => {
-  console.log('WebSocket server listening on ws://localhost:3001');
+const port = process.env.PORT || 3001;
+const wss = new WebSocket.Server({ port }, () => {
+  console.log('WebSocket server listening on ws://localhost:' + port);
 });
 
 let clients = new Set();
