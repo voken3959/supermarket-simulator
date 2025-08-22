@@ -1,0 +1,40 @@
+name: Build and Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # needed by deploy action
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        env:
+          # Set BASE_URL so Vite builds the site expecting it to be served from /repo-name/
+          BASE_URL: "/${{ github.event.repository.name }}/"
+          # VITE_WS_URL is injected into the built JS. Set this secret to your websocket server URL (wss://...).
+          # If you don't have a server, set WS_URL secret to empty value.
+          VITE_WS_URL: ${{ secrets.WS_URL }}
+        run: npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: dist
+          clean: true
