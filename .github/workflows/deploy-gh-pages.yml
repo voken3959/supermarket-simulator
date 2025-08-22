@@ -14,8 +14,10 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Use Node.js 18
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '18'
@@ -26,7 +28,6 @@ jobs:
       - name: Build
         env:
           BASE_URL: "/supermarket-simulator/"
-          VITE_WS_URL: ${{ secrets.WS_URL }}
         run: npm run build
 
       - name: Deploy to GitHub Pages
